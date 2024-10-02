@@ -10,6 +10,10 @@ public class Character : MonoBehaviour
     public string name = "";
     public int currentHealth;   // Current player health
 
+    public int currentShield = 0;
+
+    public int currentArmor = 0;
+
     void Start()
     {
         // Initialize the player's health to max at the start
@@ -33,10 +37,45 @@ public class Character : MonoBehaviour
             Die();
         }
     }
+
+    public void healShield(int shieldAmount)
+    {
+        currentShield += shieldAmount;
+        currentShield = Mathf.Clamp(currentShield, 0, 25);
+        Debug.Log(name + " shield healed. Current Shield: " + currentShield);
+    }
+
+    public void damageShield(int shieldAmount)
+    {
+        currentShield -= shieldAmount;
+        if (currentShield < 0)
+        {
+            currentShield = 0;
+        }
+        Debug.Log(name + " shield damaged. Current Shield: " + currentShield);
+    }
+
+    public void healArmor(int armorAmount)
+    {
+        currentArmor += armorAmount;
+        currentShield = Mathf.Clamp(currentArmor, 0, 25);
+        Debug.Log(name + " armor healed. Current Armor: " + currentArmor);
+    }
+
     public void Die()
     {
         Debug.Log(name + " has died.");
         Destroy(this.gameObject);
         
+    }
+
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public int GetMaxHealth()
+    {
+        return maxHealth;
     }
 }

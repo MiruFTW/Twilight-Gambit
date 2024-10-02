@@ -15,6 +15,8 @@ public class CardManager : MonoBehaviour
 
     void Start()
     {
+        /*
+        */
         SpawnCards();
     }
 

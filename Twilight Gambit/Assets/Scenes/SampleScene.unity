@@ -221,7 +221,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: -2.98}
-  m_SizeDelta: {x: 7, y: 3.97}
+  m_SizeDelta: {x: 10, y: 3.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &519420028
 GameObject:
@@ -618,7 +618,7 @@ GameObject:
   - component: {fileID: 819350828}
   - component: {fileID: 819350829}
   m_Layer: 0
-  m_Name: EnemyObj
+  m_Name: Enemy1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -723,9 +723,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d6c5611e922110499ccb0d9aff17f0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 25
+  maxHealth: 100
   name: Enemy
-  currentHealth: 5
+  currentHealth: 100
+  currentShield: 0
+  currentArmor: 0
 --- !u!61 &819350829
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -776,7 +778,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1159489384}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3.5, z: 0}
+  m_LocalPosition: {x: -2.59, y: -3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -814,7 +816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 8691923724642099997, guid: 7fef28d858e53cb4abda5ccf7ced60f2, type: 3}
   cardSpawnArea: {fileID: 1159489385}
-  numberOfCards: 3
+  numberOfCards: 5
   cardDatabase: {fileID: 11400000, guid: d453e0f7b1dc1f54587773b0b5913bc8, type: 2}
   randomCardData: []
 --- !u!4 &1272330716
@@ -846,7 +848,7 @@ GameObject:
   - component: {fileID: 1864866096}
   - component: {fileID: 1864866097}
   m_Layer: 0
-  m_Name: PlayerObj
+  m_Name: Player1
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -954,6 +956,8 @@ MonoBehaviour:
   maxHealth: 100
   name: Player
   currentHealth: 50
+  currentShield: 0
+  currentArmor: 0
 --- !u!61 &1864866097
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1027,4 +1031,3 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 1
-  cardDatabase: {fileID: 0}

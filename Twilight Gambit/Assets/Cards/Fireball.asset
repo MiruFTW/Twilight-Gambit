@@ -15,5 +15,9 @@ MonoBehaviour:
   cardName: Fireball
   description: Deal 5 Damage
   healAmount: 0
+  extraHeal: 0
   damageAmount: 5
-  cardType: Damage
+  extraDamage: 0
+  cardType: Attack
+  hasExtra: 0
+  extraAffectsSelf: 0
