@@ -14,10 +14,13 @@ public class Character : MonoBehaviour
 
     public int currentArmor = 0;
 
+    
+
     void Start()
     {
         // Initialize the player's health to max at the start
         Debug.Log("Player starting health: " + currentHealth);
+        FindObjectOfType<UIDisplay>().DisplayPlayerHealth(currentHealth);
     }
 
     // Method to heal the player
@@ -25,13 +28,15 @@ public class Character : MonoBehaviour
     {
         currentHealth += healAmount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);  // Make sure health doesn't exceed max
-        Debug.Log("Player healed. Current Health: " + currentHealth);
+        //Debug.Log("Player healed. Current Health: " + currentHealth);
     }
     
     public void Damage(int damageAmount)
     {
         currentHealth -= damageAmount;
-        Debug.Log(name + " took damage. Current Health: " + currentHealth);
+        FindObjectOfType<UIDisplay>().DisplayAttackMessage("Enemy", damageAmount);
+        FindObjectOfType<UIDisplay>().DisplayPlayerHealth(currentHealth);
+        //Debug.Log(name + " took damage. Current Health: " + currentHealth);
         if (currentHealth <= 0)
         {
             Die();
@@ -42,7 +47,7 @@ public class Character : MonoBehaviour
     {
         currentShield += shieldAmount;
         currentShield = Mathf.Clamp(currentShield, 0, 25);
-        Debug.Log(name + " shield healed. Current Shield: " + currentShield);
+        //Debug.Log(name + " shield healed. Current Shield: " + currentShield);
     }
 
     public void damageShield(int shieldAmount)
@@ -52,14 +57,14 @@ public class Character : MonoBehaviour
         {
             currentShield = 0;
         }
-        Debug.Log(name + " shield damaged. Current Shield: " + currentShield);
+        //Debug.Log(name + " shield damaged. Current Shield: " + currentShield);
     }
 
     public void healArmor(int armorAmount)
     {
         currentArmor += armorAmount;
         currentShield = Mathf.Clamp(currentArmor, 0, 25);
-        Debug.Log(name + " armor healed. Current Armor: " + currentArmor);
+        //Debug.Log(name + " armor healed. Current Armor: " + currentArmor);
     }
 
     public void Die()

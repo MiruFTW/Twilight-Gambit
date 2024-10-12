@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class CardClickHandler : MonoBehaviour
@@ -6,6 +8,8 @@ public class CardClickHandler : MonoBehaviour
     private bool cardSelected = false;  // Flag to check if the card is selected
 
     private static bool isCardInUse = false;    // Static flag to allow only one card use at a time
+
+    private static GameObject currentlySelectedCard = null;
     public LayerMask targetLayer;       // Layer mask to filter targets
 
     private CardData cardData; // Reference to the card data
@@ -21,10 +25,19 @@ public class CardClickHandler : MonoBehaviour
 
     private Character selfCharacter;
 
-    private int userHealth;
+    private Enemy targetEnemy;
+
+    private Character targetCharacter;
+
+    private GameManager gameManager;
+
+    private UIDisplay uiDisplay;
+
 
     void Start()
     {
+        GameObject gameManagerObj = GameObject.FindGameObjectWithTag("GameController");
+        gameManager = gameManagerObj.GetComponent<GameManager>();
 
     }
 
@@ -34,52 +47,55 @@ public class CardClickHandler : MonoBehaviour
         // Check if the card is selected and the user clicks the mouse
         if (cardSelected && Input.GetMouseButtonDown(0))
         {
+            
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, Mathf.Infinity, targetLayer);
+
 
             if (hit.collider != null)
             {
                 GameObject selectedObject = hit.collider.gameObject;
-                Character targetCharacter = selectedObject.GetComponent<Character>();
+
+                if (selectedObject.tag == "Card")
+                {
+                    DeselectCard();
+                    return;
+                }
+
+                if (cardData.cardType == "Attack")
+                {
+                    targetEnemy = selectedObject.GetComponent<Enemy>();
+                }
+                else
+                {
+                    targetCharacter = selectedObject.GetComponent<Character>();
+                }
 
                 if (selectedObject == null)
                 {
                     Debug.LogError("Selected Object is null.");
                 }
 
-                if (targetCharacter == null)
+                if (targetCharacter == null && targetEnemy == null)
                 {
-                    Debug.LogError("Target Character is null.");
+                    Debug.LogError("Target Character and Target Enemy is null.");
                 }
 
-                if (selectedObject.CompareTag("Enemy"))
-                {
-                    playerCharacter = GameObject.FindGameObjectWithTag("Player");
-                    selfCharacter = playerCharacter.GetComponent<Character>();
-                }
-                else
-                {
-                    GameObject enemyObject = GameObject.FindGameObjectWithTag("Enemy");
-                    selfCharacter = enemyObject.GetComponent<Character>();
-                }
-
-                if (selfCharacter == null)
-                {
-                    Debug.LogError("Self character is null.");
-                }
+                playerCharacter = GameObject.FindGameObjectWithTag("Player");
+                selfCharacter = playerCharacter.GetComponent<Character>();
                 
 
-                if (targetCharacter != null)
+                if (targetEnemy != null || targetCharacter != null)
                 {
                     
                     // Apply heal to the clicked target
-                    if (cardData.cardType == "Heal")
+                    /*if (cardData.cardType == "Heal")
                     {
                         targetCharacter.Heal(cardData.healAmount);
                     }
                     else if (cardData.cardType == "Attack")
                     {
-                        targetCharacter.Damage(cardData.damageAmount);
+                        targetEnemy.Damage(cardData.damageAmount);
                     }
                     else if (cardData.cardType == "Shield")
                     {
@@ -88,6 +104,22 @@ public class CardClickHandler : MonoBehaviour
                     else if (cardData.cardType == "Armor")
                     {
                         targetCharacter.healArmor(cardData.armorAmount);
+                    }*/
+
+                    switch(cardData.cardType)
+                    {
+                        case "Heal":
+                            targetCharacter.Heal(cardData.healAmount);
+                            break;
+                        case "Attack":
+                            targetEnemy.Damage(cardData.damageAmount);
+                            break;
+                        case "Shield":
+                            targetCharacter.healShield(cardData.shieldAmount);
+                            break;
+                        case "Armor":
+                            targetCharacter.healArmor(cardData.armorAmount);
+                            break;
                     }
                     
                     if (cardData.hasExtra)
@@ -108,19 +140,27 @@ public class CardClickHandler : MonoBehaviour
                         {
                             if (cardData.extraHeal != 0)
                             {
-                                targetCharacter.Heal(cardData.extraHeal);
+                                targetEnemy.Heal(cardData.extraHeal);
                             }
                             else
                             {
-                                targetCharacter.Damage(cardData.extraDamage);
+                                targetEnemy.Damage(cardData.extraDamage);
                             }
                         }
                     }
                     
+                    DeselectCard();
+                    gameManager.UseEnergy(1);
+                    Destroy(cardObject);
+                    Debug.Log(cardObject);
 
-                    // Deselect the card after healing
-                    cardSelected = false;
-                    isCardInUse = false;
+                    Debug.Log(gameManager.playerEnergyPerTurn + " " + gameManager.currentEnergy);
+
+                    // End turn if out of energy
+                    if (gameManager.currentEnergy == 0)
+                    {
+                        gameManager.EndTurn();
+                    }
                 }
             }
         }
@@ -131,23 +171,39 @@ public class CardClickHandler : MonoBehaviour
     public void OnCardClick()
     {
 
-        if (isCardInUse)
-        {
-            Debug.Log("A card is already in use. Please complete the current action before selecting another card.");
-            return; // If a card is already in use, don't allow selection of another card
-        }
-
-        Debug.Log("Card selected. Click on a target.\n");
         GameObject buttonObject = gameObject;
         GameObject parentObject = buttonObject.transform.parent.gameObject;
         cardObject = parentObject.transform.parent.gameObject;
+
+        if (isCardInUse && currentlySelectedCard == cardObject)
+        {
+            Debug.Log("Deselecting current card.");
+            DeselectCard();
+        }
+        else
+        {
+
+            Debug.Log("Card selected. Click on a target.\n");
+
+            CardDisplay cardDisplay = cardObject.GetComponent<CardDisplay>();
+            cardData = cardDisplay.cardData; 
+
+            Debug.Log(cardData.name + "\n" + cardData.cardType);
         
-        CardDisplay cardDisplay = cardObject.GetComponent<CardDisplay>();
-        cardData = cardDisplay.cardData;
-        Debug.Log(cardData.name + "\n" + cardData.cardType);
-        
-        
-        cardSelected = true;  // Mark the card as selected
-        isCardInUse = true;
+            cardSelected = true;  // Mark the card as selected
+            isCardInUse = true;  
+            currentlySelectedCard = cardObject;
+            Debug.Log(currentlySelectedCard);
+        }
+
+
+    }
+
+    public void DeselectCard()
+    {
+        cardSelected = false;
+        isCardInUse = false;
+        currentlySelectedCard = null;
+        Debug.Log("Card deselected.");
     }
 }

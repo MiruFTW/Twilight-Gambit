@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Stonewall Barrier
   description: An impenetrable wall of stone rises to protect you.
+  cardArt: {fileID: 21300000, guid: 7a09ffa1ac95fb340b86151d2ca65246, type: 3}
   healAmount: 0
   extraHeal: 0
   damageAmount: 0

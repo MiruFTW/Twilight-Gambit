@@ -5,6 +5,8 @@ public class CardData : ScriptableObject
 {
     public string cardName;        // Name of the card
     public string description;     // Card description
+
+    public Sprite cardArt;         // Image representing the card
     public int healAmount;         // Heal amount if the card heals the player
     public int extraHeal;
 
@@ -21,7 +23,7 @@ public class CardData : ScriptableObject
 
 
     public string cardType;
-    //public Sprite cardArt;         // Image representing the card
+    
 
     public bool hasExtra;
 

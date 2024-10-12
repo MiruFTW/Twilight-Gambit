@@ -14,6 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Health Up+
   description: Heals 5 HP
+  cardArt: {fileID: 21300000, guid: 7a09ffa1ac95fb340b86151d2ca65246, type: 3}
   healAmount: 5
+  extraHeal: 0
   damageAmount: 0
+  extraDamage: 0
+  armorAmount: 0
+  extraArmor: 0
+  shieldAmount: 0
+  extraShield: 0
   cardType: Heal
+  hasExtra: 0
+  extraAffectsSelf: 0

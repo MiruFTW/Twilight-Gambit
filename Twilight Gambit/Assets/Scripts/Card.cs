@@ -15,12 +15,11 @@ public class Card : MonoBehaviour
         cardData = data;
     }
 
-    
 
     void Start()
     {
         // Find the player in the scene
-        player = FindObjectOfType<Character>();
+        player = FindFirstObjectByType<Character>();
 
         if (player == null)
         {
